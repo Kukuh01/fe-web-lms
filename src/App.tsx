@@ -1,7 +1,11 @@
+import PageLayout from "./components/Layouts/PageLayout";
+
 export default function App() {
   return (
-    <div>
-      <div className="bg-amber-400">hello my friend</div>
-    </div>
+    <PageLayout>
+      <div>
+        <h1>Testing Masbro</h1>
+      </div>
+    </PageLayout>
   );
 }
