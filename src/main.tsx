@@ -5,6 +5,7 @@ import "./index.css";
 import HomePage from "./features/home/HomePage.tsx";
 import CoursesPage from "./features/courses/CoursesPage.tsx";
 import AssignmentsPage from "./features/assignments/AssignmentsPage.tsx";
+import DetailCourse from "./features/courses/DetailCourse.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/courses",
     element: <CoursesPage />,
+  },
+  {
+    path: "/course/:slug",
+    element: <DetailCourse />,
   },
   {
     path: "/assignments",
