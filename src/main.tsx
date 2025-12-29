@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
+import "./App.css";
 import HomePage from "./features/home/HomePage.tsx";
 import CoursesPage from "./features/courses/CoursesPage.tsx";
 import AssignmentsPage from "./features/assignments/AssignmentsPage.tsx";

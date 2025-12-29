@@ -1,5 +1,5 @@
-import { MdDescription } from "react-icons/md";
 import PageLayout from "../../components/Layouts/PageLayout";
+import LessonSection from "../lessons/LessonSection";
 
 export default function DetailCourse() {
   return (
@@ -138,80 +138,8 @@ export default function DetailCourse() {
           {/* End Media Communication */}
         </div>
       </div>
+      <LessonSection />
       {/* End Header */}
-      {/* Start Lesson */}
-      <div>
-        <div className="bg-gray-200 p-2 font-medium border-l-4 border-l-blue-900 lg:text-xl mb-5">
-          <p>Pertemuan Minggu ke-1 - Pengantar Data Mining</p>
-        </div>
-        <div className="pl-6">
-          {/* Start Description Lesson */}
-          <div className="flex flex-col">
-            <div className="flex bg-gray-200">
-              <div className="mr-3 bg-blue-900 text-amber-50 text-2xl p-2">
-                <MdDescription />
-              </div>
-              <div className="flex items-center">
-                <p className="font-medium">Deskripsi Pertemuan</p>
-              </div>
-            </div>
-            <div>
-              <div className="text-base">
-                <p className="font-medium">Pokok Bahasan: </p>
-                <ol className="list-decimal pl-6">
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                </ol>
-              </div>
-              <div className="text-base">
-                <p className="font-medium">Capaian Pembelajaran: </p>
-                <ol className="list-decimal pl-6">
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                  <li>
-                    Penjelasan tentang dataset (koleksi data) beserta atribut
-                    dan tipe datanya.
-                  </li>
-                </ol>
-              </div>
-            </div>
-          </div>
-          {/* End Description Lesson */}
-          <div></div>
-        </div>
-      </div>
     </PageLayout>
   );
 }
