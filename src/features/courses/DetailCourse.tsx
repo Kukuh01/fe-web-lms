@@ -1,18 +1,50 @@
+import { useEffect, useState } from "react";
 import PageLayout from "../../components/Layouts/PageLayout";
 import LessonSection from "../lessons/LessonSection";
+import type { Course } from "../../types/type";
+import { getCourseDetail } from "../../api/course.api";
+import { useParams } from "react-router";
 
 export default function DetailCourse() {
+  const { id } = useParams<{ id: string }>();
+  const [course, setCourse] = useState<Course>();
+  const [loadingCourse, setLoadingCourse] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const BASE_MEDIA = import.meta.env.VITE_MEDIA_URL;
+
+  useEffect(() => {
+    const fetchDataCourses = async () => {
+      try {
+        const data = await getCourseDetail(Number(id));
+        setCourse(data);
+      } catch {
+        setError("Failed to load course");
+      } finally {
+        setLoadingCourse(false);
+      }
+    };
+
+    fetchDataCourses();
+  }, [id]);
+
+  if (loadingCourse) {
+    return <p>Loading courses...</p>;
+  }
+  if (error) {
+    return <p>Error loading data: {error}</p>;
+  }
+
   return (
     <PageLayout>
       {/* Start Header */}
       <div className="w-full mb-4">
         {/* Start Judul */}
         <div className="mb-3">
-          <p className="font-bold text-2xl lg:text-4xl">Penambangan Data</p>
+          <p className="font-bold text-2xl lg:text-4xl">{course?.title}</p>
           <hr className="my-3" />
           <img
             className="rounded-2xl w-full lg:w-2xl mx-auto"
-            src="/demo.jpeg"
+            src={`${BASE_MEDIA}/${course?.thumbnail}`}
             alt=""
           />
         </div>
@@ -26,14 +58,7 @@ export default function DetailCourse() {
             </div>
             <div>
               <p>PENDAHULUAN</p>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nostrum, repellat possimus exercitationem dolores facere magni
-                nihil aliquam, voluptas, enim beatae animi! Similique
-                perferendis molestias temporibus qui? Accusantium tempore ea
-                quae obcaecati repellendus, fugit sed laudantium labore
-                voluptatibus officiis esse iusto.
-              </p>
+              <p>{course?.description}</p>
             </div>
 
             <div>
@@ -138,7 +163,7 @@ export default function DetailCourse() {
           {/* End Media Communication */}
         </div>
       </div>
-      <LessonSection />
+      {course && <LessonSection lessons={course.lessons} />}
       {/* End Header */}
     </PageLayout>
   );

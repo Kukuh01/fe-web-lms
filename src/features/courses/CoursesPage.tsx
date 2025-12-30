@@ -1,40 +1,37 @@
+import { useEffect, useState } from "react";
 import CourseCard from "../../components/course-card";
 import PageLayout from "../../components/Layouts/PageLayout";
-
-const items = [
-  {
-    title: "Penambangan Data",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-  {
-    title: "Kecerdasan Buatan",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-  {
-    title: "Pemrograman Web Lanjut",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-  {
-    title: "Basis Data",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-  {
-    title: "Literasi Digital",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-  {
-    title: "Sitem Terdistribusi",
-    dosen: "Dr. Afandi",
-    pitcure: "demo.jpeg",
-  },
-];
+import type { Course } from "../../types/type";
+import { getCourses } from "../../api/course.api";
 
 export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loadingAllCourses, setLoadingAllCourses] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const BASE_MEDIA = import.meta.env.VITE_MEDIA_URL;
+
+  useEffect(() => {
+    const fetchDataCourses = async () => {
+      try {
+        const data = await getCourses();
+        setCourses(data);
+      } catch {
+        setError("Failed to load course");
+      } finally {
+        setLoadingAllCourses(false);
+      }
+    };
+
+    fetchDataCourses();
+  }, []);
+
+  if (loadingAllCourses) {
+    return <p>Loading courses...</p>;
+  }
+  if (error) {
+    return <p>Error loading data: {error}</p>;
+  }
+
   return (
     <PageLayout>
       {/* Main Container*/}
@@ -46,12 +43,13 @@ export default function CoursesPage() {
           {/* Course Section */}
           <div className="lg:col-span-8">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {items.map((item, index) => (
+              {courses.map((course, index) => (
                 <CourseCard
+                  id={course.id}
                   key={index}
-                  title={item.title}
-                  dosen={item.dosen}
-                  pitcure={item.pitcure}
+                  title={course.title}
+                  dosen={course.instructor.name}
+                  pitcure={`${BASE_MEDIA}/${course.thumbnail}`}
                 />
               ))}
             </div>

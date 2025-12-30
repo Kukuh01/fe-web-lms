@@ -29,13 +29,15 @@ export interface Course {
   id: number;
   title: string;
   description: string;
-  instructor_id: Dosen;
+  instructor: Dosen;
+  thumbnail: string;
+  lessons: Lesson;
 }
 
 // Type Assignment
 export interface Assignment {
   id: number;
-  course_id: Course;
+  lesson_id: Lesson;
   title: string;
   description: string;
   deadline: string;
@@ -46,6 +48,7 @@ export interface Lesson {
   id: number;
   course_id: Course;
   title: string;
+  description: string;
   content: string;
 }
 
