@@ -57,4 +57,5 @@ export interface Submission {
   assignment_id: Assignment;
   student_id: Mahasiswa;
   file: string;
+  grade: number;
 }
