@@ -13,98 +13,74 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import type { Lesson } from "../../types/type";
-import { getAssignmentByLesson } from "../../api/assignment.api";
 import { useState, useRef } from "react";
 import { Button } from "../../components/ui/button";
-import { getLatestSubmission, postSubmission } from "../../api/submissions.api";
+import BASE_URL from "../../utils/baseUrl";
+import { getFileName } from "../../utils/fileHelper";
+import { useLessonAssignment } from "../../hooks/use-lesson";
 
 export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
-  // --- PERBAIKAN: Gunakan Mapping State ---
-  const [assignments, setAssignments] = useState<Record<number, any>>({});
-  const [submissions, setSubmissions] = useState<Record<number, any>>({});
-  const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>(
-    {}
-  );
-  const [uploadingStates, setUploadingStates] = useState<
-    Record<number, boolean>
-  >({});
-
-  // State bantuan untuk tahu assignment mana yang sedang diproses saat upload
-  const [currentProcessingAssignment, setCurrentProcessingAssignment] =
-    useState<any>(null);
-
+  /**
+   * Logic
+   */
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [currentProcess, setCurrentProcess] = useState<{
+    lessonId: number;
+    assignmentId: number;
+  } | null>(null);
 
-  const fetchSubmissionData = async (
-    lessonId: number,
-    assignmentId: number
-  ) => {
-    try {
-      const data = await getLatestSubmission(assignmentId);
-      setSubmissions((prev) => ({ ...prev, [lessonId]: data }));
-    } catch (err) {
-      console.error("Gagal mengambil data submission", err);
-    }
-  };
+  // Mengambil segalanya dari hook
+  const {
+    assignments,
+    submissions,
+    loadingStates,
+    uploadingStates,
+    fetchAssignment,
+    uploadSubmission,
+  } = useLessonAssignment();
 
-  const handleAccordionChange = async (values: string[]) => {
+  const handleAccordionChange = (values: string[]) => {
     const lastOpened = values[values.length - 1];
     if (!lastOpened) return;
-
     const lessonId = Number(lastOpened.split("-")[1]);
-
-    // Jika data sudah ada di state, tidak perlu fetch ulang (optimasi)
-    if (assignments[lessonId]) return;
-
-    try {
-      setLoadingStates((prev) => ({ ...prev, [lessonId]: true }));
-      const res = await getAssignmentByLesson(lessonId);
-
-      if (res.length > 0) {
-        const currentAssignment = res[0];
-        setAssignments((prev) => ({ ...prev, [lessonId]: currentAssignment }));
-        await fetchSubmissionData(lessonId, currentAssignment.id);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [lessonId]: false }));
-    }
+    fetchAssignment(lessonId);
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    // Gunakan currentProcessingAssignment agar tahu ini untuk lesson yang mana
-    if (!file || !currentProcessingAssignment) return;
+    if (!file || !currentProcess) return;
 
-    const { lessonId, assignmentId } = currentProcessingAssignment;
+    const result = await uploadSubmission(
+      currentProcess.lessonId,
+      currentProcess.assignmentId,
+      file
+    );
 
-    try {
-      setUploadingStates((prev) => ({ ...prev, [lessonId]: true }));
-      await postSubmission(assignmentId, file);
-      await fetchSubmissionData(lessonId, assignmentId);
-      alert("Tugas berhasil diunggah!");
-    } catch (error) {
-      alert("Upload gagal");
-    } finally {
-      setUploadingStates((prev) => ({ ...prev, [lessonId]: false }));
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      setCurrentProcessingAssignment(null);
+    if (result.success) {
+      alert("Berhasil!");
+    } else {
+      alert("Gagal upload");
     }
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setCurrentProcess(null);
   };
 
-  const triggerFileInput = (lessonId: number, assignmentId: number) => {
-    setCurrentProcessingAssignment({ lessonId, assignmentId });
+  const handleFileUpload = (lessonId: number, assignmentId: number) => {
+    setCurrentProcess({ lessonId, assignmentId });
     fileInputRef.current?.click();
   };
 
+  /**
+   * Component
+   */
   return (
     <div>
       <input
         type="file"
         className="hidden"
         ref={fileInputRef}
-        onChange={handleUpload}
+        onChange={onFileChange}
       />
 
       <Accordion
@@ -113,7 +89,6 @@ export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
         onValueChange={handleAccordionChange}
       >
         {lessons.map((lesson) => {
-          // Ambil data spesifik lesson ini dari mapping state
           const itemAssignment = assignments[lesson.id];
           const itemSubmission = submissions[lesson.id];
           const isItemLoading = loadingStates[lesson.id];
@@ -126,7 +101,84 @@ export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4">
                 <div className="pl-6 space-y-2">
-                  {/* ... Deskripsi & Bahan Ajar ... */}
+                  {/* Start Description Lesson */}
+                  <div className="flex flex-col">
+                    <div className="flex bg-gray-200">
+                      <div className="mr-3 bg-blue-900 text-amber-50 text-2xl p-2">
+                        <MdDescription />
+                      </div>
+                      <div className="flex items-center">
+                        <p className="font-medium">Deskripsi Pertemuan</p>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        {lesson.description}
+                        <p className="font-medium">Pokok Bahasan: </p>
+                        <ol className="list-decimal pl-6">
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                        </ol>
+                      </div>
+                      <div>
+                        <p className="font-medium">Capaian Pembelajaran: </p>
+                        <ol className="list-decimal pl-6">
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                          <li>
+                            Penjelasan tentang dataset (koleksi data) beserta
+                            atribut dan tipe datanya.
+                          </li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                  {/* End Description Lesson */}
+                  {/* Start Bahan Materi */}
+                  <div className="flex flex-col">
+                    <div className="flex bg-gray-200">
+                      <div className="mr-3 bg-blue-900 text-amber-50 text-2xl p-2">
+                        <Book />
+                      </div>
+                      <div className="flex items-center">
+                        <p className="font-medium">Bahan Ajar</p>
+                      </div>
+                    </div>
+                    <div>{lesson.content}</div>
+                  </div>
+                  {/* End Bahan Materi */}
 
                   <div className="flex flex-col">
                     <div className="flex bg-gray-200">
@@ -192,16 +244,18 @@ export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
                                     File
                                   </TableCell>
                                   <TableCell>
-                                    {itemSubmission?.file ? (
+                                    {itemSubmission?.file_url ? (
                                       <div className="flex items-center gap-2">
                                         <FileText className="h-4 w-4 text-purple-600" />
                                         <a
-                                          href={itemSubmission.file}
+                                          href={`${BASE_URL()}/${
+                                            itemSubmission.file_url
+                                          }`}
                                           target="_blank"
                                           rel="noreferrer"
                                           className="text-blue-600 underline truncate block max-w-xs"
                                         >
-                                          Lihat Submission
+                                          {getFileName(itemSubmission.file_url)}
                                         </a>
                                       </div>
                                     ) : (
@@ -236,7 +290,7 @@ export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
                           <div className="flex gap-2 pt-2">
                             <Button
                               onClick={() =>
-                                triggerFileInput(lesson.id, itemAssignment.id)
+                                handleFileUpload(lesson.id, itemAssignment.id)
                               }
                               disabled={isItemUploading}
                               variant={itemSubmission ? "outline" : "default"}

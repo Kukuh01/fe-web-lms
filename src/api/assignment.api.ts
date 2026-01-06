@@ -1,6 +1,6 @@
-import http from "../services/http";
+import api from "../services/axios";
 
 export const getAssignmentByLesson = async (id: number) => {
-  const response = await http.get(`/assignments/lesson/${id}`);
+  const response = await api.get(`/assignments/lesson/${id}`);
   return response.data;
 };

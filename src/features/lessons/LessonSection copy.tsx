@@ -19,11 +19,9 @@ import { Button } from "../../components/ui/button";
 import { getLatestSubmission, postSubmission } from "../../api/submissions.api";
 
 export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
-  const [submissions, setSubmissions] = useState<Record<number, any>>({});
-  const [assignments, setAssignments] = useState<Record<number, any>>({});
-  const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>(
-    {}
-  );
+  const [activeData, setActiveData] = useState<any>(null);
+  const [submission, setSubmission] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   // Ref untuk mengakses input file secara programatik
@@ -40,33 +38,25 @@ export default function LessonSection({ lessons }: { lessons: Lesson[] }) {
   };
 
   const handleAccordionChange = async (values: string[]) => {
+    // Ambil item terakhir yang baru saja diklik/dibuka
     const lastOpened = values[values.length - 1];
+
     if (!lastOpened) return;
 
-    const lessonId = Number(lastOpened.split("-")[1]);
-
-    // Jika data sudah ada, tidak perlu fetch ulang (opsional)
-    if (assignments[lessonId]) return;
+    const lessonId = lastOpened.split("-")[1];
 
     try {
-      setLoadingStates((prev) => ({ ...prev, [lessonId]: true }));
-
-      const assignmentData = await getAssignmentByLesson(lessonId);
-
-      if (assignmentData.length > 0) {
-        const currentAssignment = assignmentData[0];
-
-        // Simpan assignment berdasarkan lessonId
-        setAssignments((prev) => ({ ...prev, [lessonId]: currentAssignment }));
-
-        // Ambil submission untuk assignment ini
-        const subData = await getLatestSubmission(currentAssignment.id);
-        setSubmissions((prev) => ({ ...prev, [lessonId]: subData }));
+      setLoading(true);
+      const assignments = await getAssignmentByLesson(Number(lessonId));
+      if (assignments.length > 0) {
+        const currentAssignment = assignments[0];
+        setActiveData(currentAssignment);
+        await fetchSubmissionData(currentAssignment.id);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error:", error);
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [lessonId]: false }));
+      setLoading(false);
     }
   };
 

@@ -39,15 +39,6 @@ export default function AssignmentsPage() {
     <PageLayout>
       <div>
         <h1>Assignments</h1>
-        <div className="grid grid-cols-1 gap-4">
-          {items.map((item) => (
-            <CourseCard
-              title={item.title}
-              dosen={item.dosen}
-              pitcure={item.pitcure}
-            />
-          ))}
-        </div>
       </div>
     </PageLayout>
   );

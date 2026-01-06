@@ -1,37 +1,18 @@
-import { useEffect, useState } from "react";
 import CourseCard from "../../components/course-card";
 import PageLayout from "../../components/Layouts/PageLayout";
-import type { Course } from "../../types/type";
-import { getCourses } from "../../api/course.api";
+import BASE_URL from "../../utils/baseUrl";
+import { LoadingSpinner } from "../../components/loading-spinner";
+import useCourse from "../../hooks/use-courses";
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loadingAllCourses, setLoadingAllCourses] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const BASE_MEDIA = import.meta.env.VITE_MEDIA_URL;
+  /**
+   * Logic
+   */
+  const { courses, isLoading, error } = useCourse();
 
-  useEffect(() => {
-    const fetchDataCourses = async () => {
-      try {
-        const data = await getCourses();
-        setCourses(data);
-      } catch {
-        setError("Failed to load course");
-      } finally {
-        setLoadingAllCourses(false);
-      }
-    };
-
-    fetchDataCourses();
-  }, []);
-
-  if (loadingAllCourses) {
-    return <p>Loading courses...</p>;
-  }
-  if (error) {
-    return <p>Error loading data: {error}</p>;
-  }
-
+  /**
+   * Component
+   */
   return (
     <PageLayout>
       {/* Main Container*/}
@@ -42,17 +23,23 @@ export default function CoursesPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Course Section */}
           <div className="lg:col-span-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {courses.map((course, index) => (
-                <CourseCard
-                  id={course.id}
-                  key={index}
-                  title={course.title}
-                  dosen={course.instructor.name}
-                  pitcure={`${BASE_MEDIA}/${course.thumbnail}`}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : error ? (
+              <p className="text-red-500">Error: {error}</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {courses.map((course, index) => (
+                  <CourseCard
+                    id={course.id}
+                    key={index}
+                    title={course.title}
+                    dosen={course.instructor.name}
+                    pitcure={`${BASE_URL()}/${course.thumbnail}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Assignments Section*/}

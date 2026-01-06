@@ -33,7 +33,7 @@ export default function CourseCard({
       <CardFooter className="flex-row-reverse">
         <button
           onClick={() => navigate(`/course/${id}`)}
-          className="bg-black text-white p-2 rounded"
+          className="bg-blue-700 text-white p-2 rounded"
         >
           Masuk
         </button>

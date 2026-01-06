@@ -9,7 +9,7 @@ export default function PageLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 bg-slate-100">
         <SidebarTrigger />
         {children}
       </main>

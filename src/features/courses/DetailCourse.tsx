@@ -4,34 +4,21 @@ import LessonSection from "../lessons/LessonSection";
 import type { Course } from "../../types/type";
 import { getCourseDetail } from "../../api/course.api";
 import { useParams } from "react-router";
+import BASE_URL from "../../utils/baseUrl";
+import useCourseDetails from "../../hooks/use-course-details";
+import { LoadingSpinner } from "../../components/loading-spinner";
 
 export default function DetailCourse() {
   const { id } = useParams<{ id: string }>();
-  const [course, setCourse] = useState<Course>();
-  const [loadingCourse, setLoadingCourse] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const BASE_MEDIA = import.meta.env.VITE_MEDIA_URL;
 
-  useEffect(() => {
-    const fetchDataCourses = async () => {
-      try {
-        const data = await getCourseDetail(Number(id));
-        setCourse(data);
-      } catch {
-        setError("Failed to load course");
-      } finally {
-        setLoadingCourse(false);
-      }
-    };
+  const { course, isLoading, error } = useCourseDetails(id);
 
-    fetchDataCourses();
-  }, [id]);
-
-  if (loadingCourse) {
-    return <p>Loading courses...</p>;
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
+
   if (error) {
-    return <p>Error loading data: {error}</p>;
+    return <p>Gagal Memuat Data</p>;
   }
 
   return (
@@ -44,7 +31,7 @@ export default function DetailCourse() {
           <hr className="my-3" />
           <img
             className="rounded-2xl w-full lg:w-2xl mx-auto"
-            src={`${BASE_MEDIA}/${course?.thumbnail}`}
+            src={`${BASE_URL()}/${course?.thumbnail}`}
             alt=""
           />
         </div>
