@@ -15,11 +15,12 @@ export interface Mahasiswa {
   program_studi: string;
 }
 
-export interface ProfileMahasiswa {
+export interface Profile {
   id: number;
   name: string;
   nim: string;
   program_studi: string;
+  role: string;
 }
 
 // Type Dosen

@@ -3,8 +3,8 @@ import PageLayout from "../../components/Layouts/PageLayout";
 import { Card, CardContent } from "../../components/ui/card";
 import { useAuth } from "../../context/AuthContext";
 
-export default function HomePageMahasiswa() {
-  const { user, loading } = useAuth();
+export default function MahasiswaHomePage() {
+  const { user } = useAuth();
 
   return (
     <PageLayout>

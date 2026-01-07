@@ -6,13 +6,13 @@ import {
   type ReactNode,
 } from "react";
 import { getMe } from "../api/auth.api";
-import type { ProfileMahasiswa } from "../types/type";
 import { getAccessToken } from "../services/token.service";
+import type { Profile } from "../types/type";
 
 type AuthContextType = {
-  user: ProfileMahasiswa | null;
+  user: Profile | null;
   loading: boolean;
-  setUser: React.Dispatch<React.SetStateAction<ProfileMahasiswa | null>>;
+  setUser: React.Dispatch<React.SetStateAction<Profile | null>>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,7 +22,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<ProfileMahasiswa | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -1,3 +1,10 @@
+import PageLayout from "../../components/Layouts/PageLayout";
+import AdminHomePage from "../home/AdminHomePage";
+
 export default function AdminDashboard() {
-  return <h1>Dashboard Admin</h1>;
+  return (
+    <PageLayout>
+      <AdminHomePage />
+    </PageLayout>
+  );
 }

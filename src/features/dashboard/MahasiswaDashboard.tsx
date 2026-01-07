@@ -1,6 +1,5 @@
-import PageLayout from "../../components/Layouts/PageLayout";
-import HomePageMahasiswa from "../home/HomePageMahasiswa";
+import MahasiswaHomePage from "../home/MahasiswaHomePage";
 
 export default function MahasiswaDashboard() {
-  return <HomePageMahasiswa />;
+  return <MahasiswaHomePage />;
 }

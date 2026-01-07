@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PageLayout from "../../components/Layouts/PageLayout";
-import LessonSection from "../lessons/LessonSection";
+import LessonSection from "../lesson/LessonSection";
 import type { Course } from "../../types/type";
 import { getCourseDetail } from "../../api/course.api";
 import { useParams } from "react-router";

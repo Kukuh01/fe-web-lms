@@ -11,11 +11,14 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminDashboard from "./features/dashboard/AdminDashboard.tsx";
 import DosenDashboard from "./features/dashboard/DosenDashboard.tsx";
 import MahasiswaDashboard from "./features/dashboard/MahasiswaDashboard.tsx";
-import CoursesPage from "./features/courses/CoursesPage.tsx";
-import AssignmentsPage from "./features/assignments/AssignmentsPage.tsx";
-import DetailCourse from "./features/courses/DetailCourse.tsx";
+import CoursesPage from "./features/course/CoursesPage.tsx";
+import AssignmentsPage from "./features/assignment/AssignmentsPage.tsx";
+import DetailCourse from "./features/course/DetailCourse.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-import HomePageMahasiswa from "./features/home/HomePageMahasiswa.tsx";
+import HomePageMahasiswa from "./features/home/MahasiswaHomePage.tsx";
+import ManageMahasiswa from "./features/mahasiswa/ManageMahasiswa.tsx";
+import ManageDosen from "./features/dosen/ManageDosen.tsx";
+import ManageCourse from "./features/course/ManageCourse.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -23,7 +26,21 @@ const router = createBrowserRouter([
   // ADMIN
   {
     element: <ProtectedRoute allowedRoles={["admin"]} />,
-    children: [{ path: "/admin", element: <AdminDashboard /> }],
+    children: [
+      { path: "/", element: <AdminDashboard /> },
+      {
+        path: "/manage-mahasiswa",
+        element: <ManageMahasiswa />,
+      },
+      {
+        path: "/manage-dosen",
+        element: <ManageDosen />,
+      },
+      {
+        path: "/manage-courses",
+        element: <ManageCourse />,
+      },
+    ],
   },
 
   // DOSEN

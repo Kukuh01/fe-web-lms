@@ -22,16 +22,47 @@ import { logout } from "../services/auth.service";
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
-const items = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Courses", url: "/courses", icon: Inbox },
-  { title: "Assignments", url: "/assignments", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
-  { title: "Settings", url: "#", icon: Settings },
+const navItems = [
+  { title: "Home", url: "/", icon: Home, roles: ["mahasiswa", "admin"] },
+  { title: "Courses", url: "/courses", icon: Inbox, roles: ["mahasiswa"] },
+  { title: "Manage Users", url: "/manage-users", icon: User, roles: ["admin"] },
+  {
+    title: "Manage Mahasiswa",
+    url: "/manage-mahasiswa",
+    icon: User,
+    roles: ["admin"],
+  },
+  { title: "Manage Dosen", url: "/manage-dosen", icon: User, roles: ["admin"] },
+  {
+    title: "Manage Course",
+    url: "/manage-courses",
+    icon: User,
+    roles: ["admin"],
+  },
+  {
+    title: "Assignments",
+    url: "/assignments",
+    icon: Calendar,
+    roles: ["mahasiswa"],
+  },
+  {
+    title: "Settings",
+    url: "#",
+    icon: Settings,
+    roles: ["mahasiswa", "admin"],
+  },
 ];
 
 export default function AppSidebar() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+  console.log("Data User di Sidebar:", user);
+
+  const filteredItems = navItems.filter((item) => {
+    // Jika data user belum ada (loading), jangan tampilkan menu dulu
+    if (!user) return false;
+    // Cek apakah role user ada di dalam daftar roles menu
+    return item.roles.includes(user.role);
+  });
 
   return (
     <Sidebar collapsible="icon">
@@ -50,10 +81,31 @@ export default function AppSidebar() {
                 <span className="truncate font-semibold">
                   {user?.name || "Loading..."}
                 </span>
-                <span className="truncate text-xs">{user?.nim || "..."}</span>
-                <span className="truncate text-xs text-muted-foreground italic">
-                  {user?.program_studi || "..."}
-                </span>
+                {user?.role === "mahasiswa" && (
+                  <>
+                    <span className="truncate text-xs">
+                      {user?.nim || "..."}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground italic">
+                      {user?.program_studi || "..."}
+                    </span>
+                  </>
+                )}
+                {user?.role === "admin" && (
+                  <>
+                    <span className="truncate text-xs">Admin Akademik</span>
+                  </>
+                )}
+                {user?.role === "dosen" && (
+                  <>
+                    <span className="truncate text-xs">
+                      {user?.nim || "..."}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground italic">
+                      {user?.program_studi || "..."}
+                    </span>
+                  </>
+                )}
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -65,7 +117,7 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {filteredItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <Link to={item.url}>
