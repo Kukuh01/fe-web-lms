@@ -22,28 +22,11 @@ import PageLayout from "../../components/Layouts/PageLayout";
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../../components/ui/input";
+import useDosen from "../../hooks/use-dosen";
 
 export default function ManageDosen() {
-  const [dosen, setDosen] = useState([
-    {
-      id: 1,
-      nidn: "1232021001",
-      name: "Dr. Budi Santoso",
-      fakultas: "Teknik Informatika",
-    },
-    {
-      id: 2,
-      nidn: "31232021001",
-      name: "Dr. Budi Santoso",
-      fakultas: "Teknik Informatika",
-    },
-    {
-      id: 3,
-      nidn: "41232021001",
-      name: "Dr. Budi Santoso",
-      fakultas: "Teknik Informatika",
-    },
-  ]);
+  const { dosen, isLoading, error, addDosen, editDosen, removeDosen } =
+    useDosen();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
@@ -69,45 +52,44 @@ export default function ManageDosen() {
     setIsDialogOpen(true);
   };
 
-  const handleEdit = (item) => {
+  const handleEdit = (item: any) => {
     setEditData(item);
     setFormData(item);
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id, type) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      switch (type) {
-        case "mahasiswa":
-          setDosen(dosen.filter((m) => m.id !== id));
-          break;
-      }
-      showNotification("Data berhasil dihapus", "success");
-    }
-  };
-  const filterData = (data, fields) => {
+  const filterData = (data: any, fields: any) => {
     if (!searchTerm) return data;
-    return data.filter((item) =>
-      fields.some((field) =>
+    return data.filter((item: any) =>
+      fields.some((field: any) =>
         item[field]?.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (editData) {
-      // Logika Update
-      setDosen(dosen.map((m) => (m.id === editData.id ? { ...formData } : m)));
+      await editDosen(editData.id, formData);
       showNotification("Data berhasil diperbarui");
     } else {
       // Logika Tambah (Simulasi ID baru)
-      const newData = { ...formData, id: Date.now() };
-      setDosen([...dosen, newData]);
+      await addDosen(formData);
       showNotification("Data berhasil ditambahkan");
     }
 
     setIsDialogOpen(false); // Menutup modal
     setFormData({}); // Reset form
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      try {
+        await removeDosen(id);
+        showNotification("Data berhasil dihapus");
+      } catch (error) {
+        showNotification("Gagal menghapus data", "error");
+      }
+    }
   };
 
   const renderFormFields = () => {
@@ -253,7 +235,7 @@ export default function ManageDosen() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleDelete(dsn.id, "mahasiswa")}
+                        onClick={() => handleDelete(dsn.id)}
                       >
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </Button>
