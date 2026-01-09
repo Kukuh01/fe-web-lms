@@ -24,9 +24,9 @@ export default function Login() {
 
       // Redirect berdasarkan role
       const routes = {
-        admin: "/admin",
-        dosen: "/dosen",
-        mahasiswa: "/mahasiswa",
+        admin: "/",
+        dosen: "/",
+        mahasiswa: "/",
       };
       navigate(routes[user.role] || "/login");
     } catch (err: any) {

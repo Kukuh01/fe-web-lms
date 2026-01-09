@@ -1,3 +1,270 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
+import { Edit2, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import PageLayout from "../../components/Layouts/PageLayout";
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "../../components/ui/input";
+
 export default function ManageDosen() {
-  return <p>Manage Dosen</p>;
+  const [dosen, setDosen] = useState([
+    {
+      id: 1,
+      nidn: "1232021001",
+      name: "Dr. Budi Santoso",
+      fakultas: "Teknik Informatika",
+    },
+    {
+      id: 2,
+      nidn: "31232021001",
+      name: "Dr. Budi Santoso",
+      fakultas: "Teknik Informatika",
+    },
+    {
+      id: 3,
+      nidn: "41232021001",
+      name: "Dr. Budi Santoso",
+      fakultas: "Teknik Informatika",
+    },
+  ]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editData, setEditData] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    setTimeout(
+      () => setNotification({ show: false, message: "", type: "" }),
+      3000
+    );
+  };
+
+  const handleAdd = () => {
+    setEditData(null);
+    setFormData({});
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (item) => {
+    setEditData(item);
+    setFormData(item);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = (id, type) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      switch (type) {
+        case "mahasiswa":
+          setDosen(dosen.filter((m) => m.id !== id));
+          break;
+      }
+      showNotification("Data berhasil dihapus", "success");
+    }
+  };
+  const filterData = (data, fields) => {
+    if (!searchTerm) return data;
+    return data.filter((item) =>
+      fields.some((field) =>
+        item[field]?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  };
+
+  const handleSubmit = () => {
+    if (editData) {
+      // Logika Update
+      setDosen(dosen.map((m) => (m.id === editData.id ? { ...formData } : m)));
+      showNotification("Data berhasil diperbarui");
+    } else {
+      // Logika Tambah (Simulasi ID baru)
+      const newData = { ...formData, id: Date.now() };
+      setDosen([...dosen, newData]);
+      showNotification("Data berhasil ditambahkan");
+    }
+
+    setIsDialogOpen(false); // Menutup modal
+    setFormData({}); // Reset form
+  };
+
+  const renderFormFields = () => {
+    return (
+      <>
+        <div className="space-y-2">
+          <Label>NIDN</Label>
+          <Input
+            value={formData.nidn || ""}
+            onChange={(e) => setFormData({ ...formData, nidn: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Nama</Label>
+          <Input
+            value={formData.name || ""}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Fakultas</Label>
+          <Input
+            value={formData.fakultas || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, fakultas: e.target.value })
+            }
+            required
+          />
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <PageLayout>
+      {notification.show && (
+        <Alert
+          className={
+            notification.type === "success"
+              ? "bg-green-50 border-green-200"
+              : "bg-red-50 border-red-200"
+          }
+        >
+          <AlertDescription
+            className={
+              notification.type === "success"
+                ? "text-green-800"
+                : "text-red-800"
+            }
+          >
+            {notification.message}
+          </AlertDescription>
+        </Alert>
+      )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Manajemen Data</CardTitle>
+          <CardDescription>Kelola data dosen</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-semibold">Data Dosen</h3>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  onClick={handleAdd}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Tambah Dosen
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    {editData ? "Edit Dosen" : "Tambah Dosen"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {editData
+                      ? "Perbarui informasi dosen"
+                      : "Tambahkan dosen baru ke sistem"}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {renderFormFields()}
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      onClick={handleSubmit}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {editData ? "Update" : "Simpan"}
+                    </Button>
+                  </DialogFooter>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="overflow-x-auto rounded-lg border border-slate-200">
+            <table className="w-full text-sm">
+              <thead className="bg-slate-50">
+                <tr className="border-b border-slate-200">
+                  <th className="text-left p-4 font-semibold text-slate-900">
+                    NIDN
+                  </th>
+                  <th className="text-left p-4 font-semibold text-slate-900">
+                    Nama
+                  </th>
+                  <th className="text-left p-4 font-semibold text-slate-900">
+                    Fakultas
+                  </th>
+                  <th className="text-right p-4 font-semibold text-slate-900">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filterData(dosen, ["nidn", "name", "fakultas"]).map((dsn) => (
+                  <tr
+                    key={dsn.id}
+                    className="border-b border-slate-100 hover:bg-slate-50"
+                  >
+                    <td className="p-4 font-medium">{dsn.nidn}</td>
+                    <td className="p-4">{dsn.name}</td>
+                    <td className="p-4">{dsn.fakultas}</td>
+                    <td className="p-4 text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(dsn)}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(dsn.id, "mahasiswa")}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </PageLayout>
+  );
 }
