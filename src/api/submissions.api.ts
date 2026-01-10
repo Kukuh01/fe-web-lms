@@ -19,3 +19,8 @@ export const postSubmission = async (assignmentId: number, file: File) => {
   });
   return response.data;
 };
+
+export const gradeSubmission = async (submissionId: number, data: any) => {
+  // Data: { grade: 90, feedback: "Good" }
+  await api.post(`/submissions/${submissionId}/grade`, data);
+};

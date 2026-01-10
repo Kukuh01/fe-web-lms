@@ -6,6 +6,7 @@ import {
   Calendar,
   Search,
   Settings,
+  Book,
 } from "lucide-react";
 import { Sidebar, SidebarHeader } from "./ui/sidebar"; // Impor SidebarHeader
 import {
@@ -23,7 +24,8 @@ import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 const navItems = [
-  { title: "Home", url: "/", icon: Home, roles: ["mahasiswa", "admin"] },
+  { title: "Dashboard", url: "/dashboard-admin", icon: Home, roles: ["admin"] },
+  { title: "Home", url: "/home", icon: Home, roles: ["mahasiswa"] },
   { title: "Courses", url: "/courses", icon: Inbox, roles: ["mahasiswa"] },
   { title: "Manage Users", url: "/manage-users", icon: User, roles: ["admin"] },
   {
@@ -36,7 +38,7 @@ const navItems = [
   {
     title: "Manage Course",
     url: "/manage-courses",
-    icon: User,
+    icon: Book,
     roles: ["admin"],
   },
   {

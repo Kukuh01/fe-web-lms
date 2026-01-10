@@ -16,3 +16,14 @@ export const createCourse = async (data: FormData) => {
   });
   return response.data;
 };
+
+export const updateCourse = async (id: number, data: FormData) => {
+  const response = await api.put(`/courses/${id}`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+export const deleteCourse = async (id: number) => {
+  await api.delete(`/courses/${id}`);
+};

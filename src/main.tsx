@@ -21,13 +21,13 @@ import ManageDosen from "./features/dosen/ManageDosen.tsx";
 import ManageCourse from "./features/course/ManageCourse.tsx";
 
 const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
+  { path: "/", element: <Login /> },
 
   // ADMIN
   {
     element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
-      { path: "/", element: <AdminDashboard /> },
+      { path: "/dashboard-admin", element: <AdminDashboard /> },
       {
         path: "/manage-mahasiswa",
         element: <ManageMahasiswa />,
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       { path: "/mahasiswa", element: <MahasiswaDashboard /> },
       { path: "/courses", element: <CoursesPage /> },
       { path: "/assignments", element: <AssignmentsPage /> },
-      { path: "/", element: <HomePageMahasiswa /> },
+      { path: "/home", element: <HomePageMahasiswa /> },
       { path: "/course/:id", element: <DetailCourse /> },
     ],
   },

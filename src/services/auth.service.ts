@@ -22,7 +22,7 @@ export const isCurrentlyLoggingOut = () => isLoggingOut;
 export const logout = () => {
   setLoggingOut(true);
   removeAccessToken();
-  window.location.href = "/login";
+  window.location.href = "/";
 };
 
 export const getCurrentUser = () => {
