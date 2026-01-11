@@ -1,3 +1,10 @@
+import PageLayout from "../../components/Layouts/PageLayout";
+import DosenHomePage from "../home/DosenHomePage";
+
 export default function DosenDashboard() {
-  return <h1>Dashboard Dosen</h1>;
+  return (
+    <PageLayout>
+      <DosenHomePage></DosenHomePage>
+    </PageLayout>
+  );
 }

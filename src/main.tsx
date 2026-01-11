@@ -36,17 +36,24 @@ const router = createBrowserRouter([
         path: "/manage-dosen",
         element: <ManageDosen />,
       },
-      {
-        path: "/manage-courses",
-        element: <ManageCourse />,
-      },
     ],
   },
 
   // DOSEN
   {
     element: <ProtectedRoute allowedRoles={["dosen"]} />,
-    children: [{ path: "/dosen", element: <DosenDashboard /> }],
+    children: [{ path: "/dashboard-dosen", element: <DosenDashboard /> }],
+  },
+
+  // Dosen and Admin
+  {
+    element: <ProtectedRoute allowedRoles={["admin", "dosen"]} />,
+    children: [
+      {
+        path: "/manage-courses",
+        element: <ManageCourse />,
+      },
+    ],
   },
 
   // MAHASISWA

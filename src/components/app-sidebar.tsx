@@ -34,12 +34,23 @@ const navItems = [
     icon: User,
     roles: ["admin"],
   },
-  { title: "Manage Dosen", url: "/manage-dosen", icon: User, roles: ["admin"] },
+  {
+    title: "Manage Dosen",
+    url: "/manage-dosen",
+    icon: User,
+    roles: ["admin"],
+  },
+  {
+    title: "Dashboard",
+    url: "/dashboard-dosen",
+    icon: Home,
+    roles: ["dosen"],
+  },
   {
     title: "Manage Course",
     url: "/manage-courses",
     icon: Book,
-    roles: ["admin"],
+    roles: ["admin", "dosen"],
   },
   {
     title: "Assignments",
@@ -101,10 +112,10 @@ export default function AppSidebar() {
                 {user?.role === "dosen" && (
                   <>
                     <span className="truncate text-xs">
-                      {user?.nim || "..."}
+                      {user?.nidn || "..."}
                     </span>
                     <span className="truncate text-xs text-muted-foreground italic">
-                      {user?.program_studi || "..."}
+                      {user?.fakultas || "..."}
                     </span>
                   </>
                 )}

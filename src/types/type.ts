@@ -19,8 +19,10 @@ export interface Profile {
   id: number;
   name: string;
   nim: string;
+  nidn: string;
   program_studi: string;
   role: string;
+  fakultas: string;
 }
 
 // Type Dosen
