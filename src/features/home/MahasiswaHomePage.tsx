@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function MahasiswaHomePage() {
   const { user } = useAuth();
+  const { stats: mahasiswaStats, isLoading: loadingMahasiswa } =
+    useMahasiswaStats();
 
   return (
     <PageLayout>

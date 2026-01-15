@@ -498,7 +498,7 @@ export default function ManageCourse() {
                     <CardHeader className="bg-slate-50/50">
                       <div className="flex justify-between items-start">
                         <div className="flex gap-4">
-                          <div className="w-24 h-16 bg-slate-200 rounded object-cover overflow-hidden flex items-center justify-center">
+                          <div className="w-xl h-16 bg-slate-200 rounded object-cover overflow-hidden flex items-center justify-center">
                             {course.thumbnail ? (
                               <img
                                 src={`${BASE_URL()}/${course.thumbnail}`}
@@ -630,7 +630,7 @@ export default function ManageCourse() {
                                     <Label className="text-xs font-bold text-slate-500">
                                       Deskripsi
                                     </Label>
-                                    <p className="text-sm mt-1">
+                                    <p className="text-sm mt-1 break-words whitespace-pre-wrap">
                                       {lesson.description}
                                     </p>
                                   </div>

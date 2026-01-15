@@ -2,9 +2,14 @@ import { Award, Bell, BookOpen, Calendar } from "lucide-react";
 import PageLayout from "../../components/Layouts/PageLayout";
 import { Card, CardContent } from "../../components/ui/card";
 import { useAuth } from "../../context/AuthContext";
+import useCourseStats from "../../hooks/use-course-stats";
+import useMahasiswaStats from "../../hooks/use-mahasiswa-stats";
 
 export default function DosenHomePage() {
   const { user } = useAuth();
+  const { stats: courseStats, isLoading: loadingCourse } = useCourseStats();
+  const { stats: mahasiswaStats, isLoading: loadingMahasiswa } =
+    useMahasiswaStats();
 
   return (
     <div className="p-6 space-y-6 bg-slate-100 min-h-screen">
@@ -53,12 +58,16 @@ export default function DosenHomePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-xl p-4 text-white bg-gradient-to-br from-sky-400 to-blue-600">
                   <BookOpen />
-                  <h3 className="text-3xl font-bold mt-2">8</h3>
+                  <h3 className="text-3xl font-bold mt-2">
+                    {courseStats?.total_courses}
+                  </h3>
                   <p className="text-sm">Mata Kuliah yang Diampu</p>
                 </div>
                 <div className="rounded-xl p-4 text-white bg-gradient-to-br from-emerald-400 to-green-600">
                   <BookOpen />
-                  <h3 className="text-3xl font-bold mt-2">24</h3>
+                  <h3 className="text-3xl font-bold mt-2">
+                    {mahasiswaStats?.total_mahasiswa}
+                  </h3>
                   <p className="text-sm">Total Mahasiswa yang Diampu</p>
                 </div>
               </div>

@@ -69,3 +69,22 @@ export interface Submission {
   file: string;
   grade: number;
 }
+
+export interface CourseStats {
+  total_courses: number;
+}
+
+export interface DosenStats {
+  total_dosen: number;
+}
+
+export interface MahasiswaStats {
+  total_mahasiswa: number;
+}
+
+export interface UserStats {
+  total_users: number;
+  total_mahasiswa: number;
+  total_dosen: number;
+  total_admin: number;
+}

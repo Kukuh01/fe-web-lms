@@ -1,5 +1,10 @@
 import api from "../services/axios";
 
+export const getDosenStats = async () => {
+  const response = await api.get("/dosen/stats");
+  return response.data;
+};
+
 export const getDosen = async () => {
   const response = await api.get("/dosen/");
   return response.data;

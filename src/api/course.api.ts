@@ -1,5 +1,10 @@
 import api from "../services/axios";
 
+export const getCourseStats = async () => {
+  const response = await api.get("/courses/stats");
+  return response.data;
+};
+
 export const getCourses = async () => {
   const response = await api.get("/courses/");
   return response.data;
@@ -11,7 +16,7 @@ export const getCourseDetail = async (id: number) => {
 };
 
 export const createCourse = async (data: FormData) => {
-  const response = await api.post("/courses", data, {
+  const response = await api.post("/courses/", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
